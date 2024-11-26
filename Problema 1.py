@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-from scipy.stats import norm, expon, gamma, lognorm
+from scipy.stats import norm, expon, gamma, lognorm, probplot
 
 # Estilo y personalización
 custom = {
@@ -138,6 +138,19 @@ plt.minorticks_on()  # Habilitar ticks menores
 plt.legend()
 plt.show()
 
+# Generar el QQPlot
+fig, ax = plt.subplots(figsize=(8, 8))
+probplot(sale_price, dist="lognorm", sparams=(shape, loc, scale), plot=ax)
+ax.get_lines()[1].set_color('red')  # Línea de referencia en rojo
+ax.get_lines()[1].set_label('Cuantiles de los datos teóricos')  # Etiqueta para la línea
+ax.get_lines()[0].set_label('Cuantiles de los datos experimentales')  # Etiqueta para los puntos
+plt.title('QQPlot para la distribución lognormal ajustada')
+plt.xlabel('Cuantiles teóricos')
+plt.ylabel('Cuantiles de los datos')
+plt.grid(alpha=0.3)
+plt.legend()
+plt.show()
+
 ## CURVA FINAL
 
 sns.set_palette(sns.color_palette(["#38b73f"]))  # Verde pastel
@@ -173,6 +186,12 @@ print("Mediana del precio de venta:", sale_price.median())
 
 # Probabilidad de que una casa cueste más de $200,000
 prob_mas_200k = 1 - lognorm.cdf(200000, shape, loc=loc, scale=scale)
+
+# Valor esperado del precio de las casas
+valor_esperado = lognorm.mean(shape, loc=loc, scale=scale)
+
+print("Probabilidad de que una casa cueste más de $200,000: ", prob_mas_200k)
+print("Valor esperado del precio de las casas: ", valor_esperado)
 
 # Valor esperado del precio de las casas
 valor_esperado = lognorm.mean(shape, loc=loc, scale=scale)
